@@ -2,6 +2,16 @@
 
 https://en.wikipedia.org/wiki/Bilinear_interpolation
 
+
+## How to use it
+
+Needs to be documented but currently the best might be to have a look at
+[tests/integration_tests.rs](tests/integration_tests.rs) on how I insert the
+data and then obtain approximate values.
+
+
+## Code development
+
 Testing the code:
 ```
 $ cargo test --release -- --nocapture
