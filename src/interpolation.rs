@@ -2,6 +2,7 @@
 
 use std::collections::HashMap;
 
+#[derive(Clone)]
 pub struct Interpolation {
     origin: (f64, f64),
     step: (f64, f64),
