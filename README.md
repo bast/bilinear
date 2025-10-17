@@ -13,22 +13,8 @@ I first want to test it a bit in another project to stabilize/sharpen the API
 and then I will document in detail how to set it up and evaluate.
 
 
-## Input data can have "holes"
+## Testing the code
 
-When interpolating, the code first finds the right "tile", then checks that we
-have data available for all 4 corners. If yes, then the value is interpolated
-and used. If one or more of the 4 corner values are missing, then the function
-evaluates to `None`.
-
-
-## Code development
-
-Testing the code:
-```
+```bash
 $ cargo test --release -- --nocapture
 ```
-
-## Implementation notes
-
-- `HashMap<usize, f64>` turned out significantly faster compared to
-  `HashMap<(usize, usize), f64>`, both when creating and evaluating.

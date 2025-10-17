@@ -1,9 +1,4 @@
-#![allow(clippy::too_many_arguments)]
-
-use bilinear;
-
-extern crate rand;
-use rand::{rngs::StdRng, Rng, SeedableRng};
+use rand::{Rng, SeedableRng, rngs::StdRng};
 
 use std::time::Instant;
 
@@ -31,8 +26,8 @@ fn basic() {
     let (x_min, x_max) = (-4.0, 4.0);
     let (y_min, y_max) = (-4.0, 4.0);
 
-    let num_steps_x = 1000;
-    let num_steps_y = 1000;
+    let num_steps_x = 2_000;
+    let num_steps_y = 2_000;
 
     let origin = (x_min, y_min);
     let step = (
@@ -41,7 +36,7 @@ fn basic() {
     );
 
     let start = Instant::now();
-    let mut interpolation = bilinear::Interpolation::new(origin, step);
+    let mut interpolation = bilinear::Interpolation::new(origin, step, num_steps_x, num_steps_y);
     for ix in 0..=num_steps_x {
         let x = origin.0 + step.0 * (ix as f64);
         for iy in 0..=num_steps_y {
@@ -51,10 +46,15 @@ fn basic() {
     }
     println!("time elapsed setting up: {:?}", start.elapsed());
 
-    let num_points = 1_000_000;
+    let num_points = 5_000_000;
     let mut rng = StdRng::from_seed([0; 32]);
     let random_points: Vec<(f64, f64)> = (0..num_points)
-        .map(|_| (rng.gen_range(x_min..x_max), rng.gen_range(y_min..y_max)))
+        .map(|_| {
+            (
+                rng.random_range(x_min..x_max),
+                rng.random_range(y_min..y_max),
+            )
+        })
         .collect();
 
     let start = Instant::now();
