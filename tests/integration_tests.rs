@@ -34,9 +34,10 @@ fn basic() {
         (x_max - x_min) / (num_steps_x as f64),
         (y_max - y_min) / (num_steps_y as f64),
     );
+    let num_grid_points = (num_steps_x + 1, num_steps_y + 1);
 
     let start = Instant::now();
-    let mut interpolation = bilinear::Interpolation::new(origin, step, num_steps_x, num_steps_y);
+    let mut interpolation = bilinear::Interpolation::new(origin, step, num_grid_points);
     for ix in 0..=num_steps_x {
         let x = origin.0 + step.0 * (ix as f64);
         for iy in 0..=num_steps_y {
