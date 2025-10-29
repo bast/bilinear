@@ -1,7 +1,11 @@
 pub struct Interpolation {
+    /// Origin (x0, y0) of the grid
     origin: (f64, f64),
+    /// Step size (dx, dy) between grid points
     step: (f64, f64),
+    /// Number of grid points (nx, ny)
     num_grid_points: (usize, usize),
+    /// Flattened data in row-major order
     data: Vec<f64>,
 }
 
@@ -18,16 +22,19 @@ impl Interpolation {
     }
 
     fn index(&self, ix: usize, iy: usize) -> usize {
-        ix * self.num_grid_points.1 + iy
+        iy * self.num_grid_points.0 + ix
     }
 
     fn get(&self, ix: usize, iy: usize) -> f64 {
+        debug_assert!(ix < self.num_grid_points.0, "ix out of bounds");
+        debug_assert!(iy < self.num_grid_points.1, "iy out of bounds");
+
         self.data[self.index(ix, iy)]
     }
 
     pub fn insert(&mut self, ix: usize, iy: usize, value: f64) {
-        assert!(ix < self.num_grid_points.0, "ix out of bounds");
-        assert!(iy < self.num_grid_points.1, "iy out of bounds");
+        debug_assert!(ix < self.num_grid_points.0, "ix out of bounds");
+        debug_assert!(iy < self.num_grid_points.1, "iy out of bounds");
 
         let idx = self.index(ix, iy);
         self.data[idx] = value;
@@ -44,10 +51,9 @@ impl Interpolation {
         let f21 = self.get(ix2, iy1);
         let f22 = self.get(ix2, iy2);
 
-        let fxy1 = f11 * (1.0 - tx) + f21 * tx;
-        let fxy2 = f12 * (1.0 - tx) + f22 * tx;
-
-        Some(fxy1 * (1.0 - ty) + fxy2 * ty)
+        let fx1 = f11 + tx * (f21 - f11);
+        let fx2 = f12 + tx * (f22 - f12);
+        Some(fx1 + ty * (fx2 - fx1))
     }
 
     fn bounding_indices(
