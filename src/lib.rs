@@ -2,23 +2,35 @@ pub struct Interpolation {
     origin: (f64, f64),
     step: (f64, f64),
     num_grid_points: (usize, usize),
-    data: Vec<Vec<f64>>,
+    data: Vec<f64>,
 }
 
 impl Interpolation {
     pub fn new(origin: (f64, f64), step: (f64, f64), num_grid_points: (usize, usize)) -> Self {
+        let num_total_points = num_grid_points.0 * num_grid_points.1;
+
         Interpolation {
             origin,
             step,
             num_grid_points,
-            data: vec![vec![0.0; num_grid_points.1]; num_grid_points.0],
+            data: vec![0.0; num_total_points],
         }
+    }
+
+    fn index(&self, ix: usize, iy: usize) -> usize {
+        ix * self.num_grid_points.1 + iy
+    }
+
+    fn get(&self, ix: usize, iy: usize) -> f64 {
+        self.data[self.index(ix, iy)]
     }
 
     pub fn insert(&mut self, ix: usize, iy: usize, value: f64) {
         assert!(ix < self.num_grid_points.0, "ix out of bounds");
         assert!(iy < self.num_grid_points.1, "iy out of bounds");
-        self.data[ix][iy] = value;
+
+        let idx = self.index(ix, iy);
+        self.data[idx] = value;
     }
 
     pub fn evaluate(&self, x: f64, y: f64) -> Option<f64> {
@@ -27,10 +39,10 @@ impl Interpolation {
         let (iy1, iy2, ty) =
             self.bounding_indices(y, self.origin.1, self.step.1, self.num_grid_points.1)?;
 
-        let f11 = self.data[ix1][iy1];
-        let f12 = self.data[ix1][iy2];
-        let f21 = self.data[ix2][iy1];
-        let f22 = self.data[ix2][iy2];
+        let f11 = self.get(ix1, iy1);
+        let f12 = self.get(ix1, iy2);
+        let f21 = self.get(ix2, iy1);
+        let f22 = self.get(ix2, iy2);
 
         let fxy1 = f11 * (1.0 - tx) + f21 * tx;
         let fxy2 = f12 * (1.0 - tx) + f22 * tx;
