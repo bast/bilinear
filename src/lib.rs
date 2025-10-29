@@ -21,17 +21,6 @@ impl Interpolation {
         }
     }
 
-    fn index(&self, ix: usize, iy: usize) -> usize {
-        iy * self.num_grid_points.0 + ix
-    }
-
-    fn get(&self, ix: usize, iy: usize) -> f64 {
-        debug_assert!(ix < self.num_grid_points.0, "ix out of bounds");
-        debug_assert!(iy < self.num_grid_points.1, "iy out of bounds");
-
-        self.data[self.index(ix, iy)]
-    }
-
     pub fn insert(&mut self, ix: usize, iy: usize, value: f64) {
         debug_assert!(ix < self.num_grid_points.0, "ix out of bounds");
         debug_assert!(iy < self.num_grid_points.1, "iy out of bounds");
@@ -54,6 +43,17 @@ impl Interpolation {
         let fx1 = f11 + tx * (f21 - f11);
         let fx2 = f12 + tx * (f22 - f12);
         Some(fx1 + ty * (fx2 - fx1))
+    }
+
+    fn index(&self, ix: usize, iy: usize) -> usize {
+        iy * self.num_grid_points.0 + ix
+    }
+
+    fn get(&self, ix: usize, iy: usize) -> f64 {
+        debug_assert!(ix < self.num_grid_points.0, "ix out of bounds");
+        debug_assert!(iy < self.num_grid_points.1, "iy out of bounds");
+
+        self.data[self.index(ix, iy)]
     }
 
     fn bounding_indices(
