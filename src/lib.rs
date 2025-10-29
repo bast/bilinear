@@ -32,7 +32,10 @@ impl Interpolation {
         let f21 = self.data[ix2][iy1];
         let f22 = self.data[ix2][iy2];
 
-        Some((f11 * (1.0 - tx) + f21 * tx) * (1.0 - ty) + (f12 * (1.0 - tx) + f22 * tx) * ty)
+        let fxy1 = f11 * (1.0 - tx) + f21 * tx;
+        let fxy2 = f12 * (1.0 - tx) + f22 * tx;
+
+        Some(fxy1 * (1.0 - ty) + fxy2 * ty)
     }
 
     fn bounding_indices(
