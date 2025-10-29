@@ -57,12 +57,12 @@ impl Interpolation {
         step: f64,
         max_index: usize,
     ) -> Option<(usize, usize, f64)> {
-        if step == 0.0 {
+        if step <= f64::EPSILON {
             return None;
         }
 
         let r = (value - origin) / step;
-        if r < 0.0 || r > (max_index - 1) as f64 {
+        if r < 0.0 || r >= (max_index - 1) as f64 {
             return None; // out of bounds
         }
 
