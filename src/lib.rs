@@ -1,10 +1,13 @@
 pub struct Interpolation {
     /// Origin (x0, y0) of the grid
     origin: (f64, f64),
+
     /// Step size (dx, dy) between grid points
     step: (f64, f64),
+
     /// Number of grid points (nx, ny)
     num_grid_points: (usize, usize),
+
     /// Flattened data in row-major order
     data: Vec<f64>,
 }
